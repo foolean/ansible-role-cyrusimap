@@ -9,11 +9,17 @@
 - name: Role foolean/cyrusimap
   block:
 
-    - name: Ensure IMAP and POP3 server (Cyrus IMAP) is not installed (CIS)
+    - name: Set OS variables
+      ansible.builtin.include_vars:
+        file: "{{ item }}"
+      with_first_found:
+        - "{{ ansible_os_family|lower }}.yml"
+        - "default.yml"
+
+    - name: CIS | Ensure IMAP and POP3 server (Cyrus IMAP) is not installed
       become: true
       ansible.builtin.package:
-        name:
-          - 'cyrus-imap'
+        name: "{{ cyrusimap_packages }}"
         state: absent
 
   # Tags to be applied to this role (block)
